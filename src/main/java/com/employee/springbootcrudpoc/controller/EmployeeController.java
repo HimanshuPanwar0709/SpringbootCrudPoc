@@ -1,6 +1,7 @@
 package com.employee.springbootcrudpoc.controller;
 
 import com.employee.springbootcrudpoc.dto.EmployeeDetailsRequestBody;
+import com.employee.springbootcrudpoc.dto.EmployeeDetailsResponseBody;
 import com.employee.springbootcrudpoc.exception.ResourceNotFoundException;
 import com.employee.springbootcrudpoc.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ public class EmployeeController {
     EmployeeService employeeService;
 
     @GetMapping(value = "/get-details")
-    public ResponseEntity<?> getDetails(@RequestParam Long id)
+    public EmployeeDetailsResponseBody getDetails(@RequestParam Long id)
     throws ResourceNotFoundException {
         return employeeService.getDetails(id);
     }

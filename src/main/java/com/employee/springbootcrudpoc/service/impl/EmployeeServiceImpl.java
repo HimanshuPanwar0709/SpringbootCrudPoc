@@ -1,6 +1,7 @@
 package com.employee.springbootcrudpoc.service.impl;
 
 import com.employee.springbootcrudpoc.dto.AddressRequestBody;
+import com.employee.springbootcrudpoc.dto.AddressResponseBody;
 import com.employee.springbootcrudpoc.dto.EmployeeDetailsRequestBody;
 import com.employee.springbootcrudpoc.dto.EmployeeDetailsResponseBody;
 import com.employee.springbootcrudpoc.exception.ResourceNotFoundException;
@@ -24,15 +25,32 @@ public class EmployeeServiceImpl implements EmployeeService {
     EmployeeRepository employeeRepository;
 
     @Override
-    public ResponseEntity<?> getDetails(Long id) {
+    public EmployeeDetailsResponseBody getDetails(Long id) throws ResourceNotFoundException{
         EmployeeDetailsResponseBody employeeDetailsResponseBody = new EmployeeDetailsResponseBody();
-
+        AddressResponseBody addressResponseBody = new AddressResponseBody();
         Optional<EmployeeDetail> employeeDetailList = employeeRepository.findById(id);
-        if(employeeDetailList == null) {
-            return null;
-        }
-        else{
-            return null;
+        if (employeeDetailList.isPresent()) {
+            Address address = employeeDetailList.get().getAddress();
+
+            addressResponseBody.setId(address.getId());
+            addressResponseBody.setAddressLine1(address.getAddressLine1());
+            addressResponseBody.setAddressLine2(address.getAddressLine2());
+            addressResponseBody.setCity(address.getCity());
+            addressResponseBody.setState(address.getState());
+            addressResponseBody.setPinCode(address.getPinCode());
+
+            employeeDetailsResponseBody.setId(employeeDetailList.get().getId());
+            employeeDetailsResponseBody.setEmpCode(employeeDetailList.get().getEmpCode());
+            employeeDetailsResponseBody.setFirstName(employeeDetailList.get().getFirstName());
+            employeeDetailsResponseBody.setLastName(employeeDetailList.get().getLastName());
+            employeeDetailsResponseBody.setDesignation(employeeDetailList.get().getDesignation());
+            employeeDetailsResponseBody.setNumber(employeeDetailList.get().getNumber());
+            employeeDetailsResponseBody.setEmailId(employeeDetailList.get().getEmailId());
+            employeeDetailsResponseBody.setAddressResponseBody(addressResponseBody);
+
+            return employeeDetailsResponseBody;
+        }else{
+            throw new ResourceNotFoundException("Details is not present");
         }
     }
 
