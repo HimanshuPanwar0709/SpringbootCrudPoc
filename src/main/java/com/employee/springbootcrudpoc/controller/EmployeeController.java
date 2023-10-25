@@ -36,6 +36,7 @@ public class EmployeeController {
         return employeeService.updateDetailsById(id, employeeDetailsRequestBody);
     }
 
+
     @DeleteMapping(value = "/delete-details-by-id")
     public ResponseEntity<?> deleteDetailsById( @RequestParam Long id){
         return employeeService.deleteDetailsById(id);
