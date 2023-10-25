@@ -7,7 +7,7 @@ import org.springframework.validation.annotation.Validated;
 
 import java.io.Serializable;
 
-@Entity
+@Entity(name = "employee")
 @Data
 @Builder
 @NoArgsConstructor

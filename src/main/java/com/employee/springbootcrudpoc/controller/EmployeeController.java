@@ -9,12 +9,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+import javax.validation.Valid;
+
+@RestController
 @RequestMapping(value = "/employee")
 public class EmployeeController {
 
     @Autowired
-    EmployeeService employeeService;
+    private EmployeeService employeeService;
 
     @GetMapping(value = "/get-details")
     public EmployeeDetailsResponseBody getDetails(@RequestParam Long id)
@@ -24,7 +26,7 @@ public class EmployeeController {
 
     @PostMapping(value = "/save-details")
     public ResponseEntity<?> saveDetails(
-            @RequestBody EmployeeDetailsRequestBody employeeDetailsRequestBody
+            @Valid @RequestBody EmployeeDetailsRequestBody employeeDetailsRequestBody
     )throws ResourceNotFoundException{
         return employeeService.saveDetails(employeeDetailsRequestBody);
     }
@@ -38,7 +40,8 @@ public class EmployeeController {
 
 
     @DeleteMapping(value = "/delete-details-by-id")
-    public ResponseEntity<?> deleteDetailsById( @RequestParam Long id){
+    public ResponseEntity<?> deleteDetailsById( @RequestParam Long id
+    )throws ResourceNotFoundException{
         return employeeService.deleteDetailsById(id);
     }
 }

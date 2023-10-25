@@ -11,7 +11,7 @@ public interface EmployeeService {
 
     ResponseEntity<?> saveDetails(EmployeeDetailsRequestBody employeeDetailsRequestBody) throws ResourceNotFoundException;
 
-    ResponseEntity<?> updateDetailsById(Long id, EmployeeDetailsRequestBody employeeDetailsRequestBody);
+    ResponseEntity<?> updateDetailsById(Long id, EmployeeDetailsRequestBody employeeDetailsRequestBody)throws ResourceNotFoundException;
 
-    ResponseEntity<?> deleteDetailsById(Long id);
+    ResponseEntity<?> deleteDetailsById(Long id) throws ResourceNotFoundException;
 }

@@ -9,20 +9,19 @@ import com.employee.springbootcrudpoc.model.Address;
 import com.employee.springbootcrudpoc.model.EmployeeDetail;
 import com.employee.springbootcrudpoc.repository.EmployeeRepository;
 import com.employee.springbootcrudpoc.service.EmployeeService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
-    EmployeeRepository employeeRepository;
+    private EmployeeRepository employeeRepository;
 
     @Override
     public EmployeeDetailsResponseBody getDetails(Long id) throws ResourceNotFoundException {
@@ -34,23 +33,12 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new ResourceNotFoundException("Address not found for Employee ID: " + id);
         }
 
-        AddressResponseBody addressResponseBody = new AddressResponseBody();
-        addressResponseBody.setId(address.getId());
-        addressResponseBody.setAddressLine1(address.getAddressLine1());
-        addressResponseBody.setAddressLine2(address.getAddressLine2());
-        addressResponseBody.setCity(address.getCity());
-        addressResponseBody.setState(address.getState());
-        addressResponseBody.setPinCode(address.getPinCode());
-
         EmployeeDetailsResponseBody employeeDetailsResponseBody = new EmployeeDetailsResponseBody();
-        employeeDetailsResponseBody.setId(employeeDetail.getId());
-        employeeDetailsResponseBody.setEmpCode(employeeDetail.getEmpCode());
-        employeeDetailsResponseBody.setFirstName(employeeDetail.getFirstName());
-        employeeDetailsResponseBody.setLastName(employeeDetail.getLastName());
-        employeeDetailsResponseBody.setDesignation(employeeDetail.getDesignation());
-        employeeDetailsResponseBody.setNumber(employeeDetail.getNumber());
-        employeeDetailsResponseBody.setEmailId(employeeDetail.getEmailId());
+        AddressResponseBody addressResponseBody = new AddressResponseBody();
+
+        BeanUtils.copyProperties(address, addressResponseBody);
         employeeDetailsResponseBody.setAddressResponseBody(addressResponseBody);
+        BeanUtils.copyProperties(employeeDetail, employeeDetailsResponseBody);
 
         return employeeDetailsResponseBody;
     }
@@ -63,21 +51,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Address address = new Address();
         AddressRequestBody addressRequestBody = employeeDetailsRequestBody.getAddressRequestBody();
 
-        address.setId(addressRequestBody.getId());
-        address.setAddressLine1(addressRequestBody.getAddressLine1());
-        address.setAddressLine2(addressRequestBody.getAddressLine2());
-        address.setCity(addressRequestBody.getCity());
-        address.setState(addressRequestBody.getState());
-        address.setPinCode(addressRequestBody.getPinCode());
-
-        employeeDetail.setId(employeeDetailsRequestBody.getId());
-        employeeDetail.setEmpCode(employeeDetailsRequestBody.getEmpCode());
-        employeeDetail.setFirstName(employeeDetailsRequestBody.getFirstName());
-        employeeDetail.setLastName(employeeDetailsRequestBody.getLastName());
-        employeeDetail.setDesignation(employeeDetailsRequestBody.getDesignation());
-        employeeDetail.setNumber(employeeDetailsRequestBody.getNumber());
-        employeeDetail.setEmailId(employeeDetailsRequestBody.getEmailId());
-        employeeDetail.setAddress(address);
+        mapEmployeeDetails(address, addressRequestBody,employeeDetail, employeeDetailsRequestBody);
 
         this.employeeRepository.save(employeeDetail);
         return ResponseEntity.status(HttpStatus.OK).body("Employee Detail save successfully");
@@ -88,26 +62,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         try {
             Optional<EmployeeDetail> existingEmployeeOptional = employeeRepository.findById(id);
             if (existingEmployeeOptional.isPresent()) {
-                EmployeeDetail existingEmployee = existingEmployeeOptional.get();
-                
+                EmployeeDetail employeeDetail = existingEmployeeOptional.get();
                 AddressRequestBody addressRequestBody = employeeDetailsRequestBody.getAddressRequestBody();
-                Address address = existingEmployee.getAddress();
-                address.setId(addressRequestBody.getId());
-                address.setAddressLine1(addressRequestBody.getAddressLine1());
-                address.setAddressLine2(addressRequestBody.getAddressLine2());
-                address.setCity(addressRequestBody.getCity());
-                address.setState(addressRequestBody.getState());
-                address.setPinCode(addressRequestBody.getPinCode());
-                
-                existingEmployee.setEmpCode(employeeDetailsRequestBody.getEmpCode());
-                existingEmployee.setFirstName(employeeDetailsRequestBody.getFirstName());
-                existingEmployee.setLastName(employeeDetailsRequestBody.getLastName());
-                existingEmployee.setDesignation(employeeDetailsRequestBody.getDesignation());
-                existingEmployee.setNumber(employeeDetailsRequestBody.getNumber());
-                existingEmployee.setEmailId(employeeDetailsRequestBody.getEmailId());
+                Address address = employeeDetail.getAddress();
 
-                // Save the updated employee details
-                employeeRepository.save(existingEmployee);
+                mapEmployeeDetails(address, addressRequestBody, employeeDetail, employeeDetailsRequestBody);
+
+                employeeRepository.save(employeeDetail);
 
                 return ResponseEntity.status(HttpStatus.OK).body("Employee Detail updated successfully");
             } else {
@@ -131,5 +92,16 @@ public class EmployeeServiceImpl implements EmployeeService {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete employee with ID: " + id);
         }
+    }
+
+    private static void mapEmployeeDetails(
+            Address address,
+            AddressRequestBody addressRequestBody,
+            EmployeeDetail employeeDetail,
+            EmployeeDetailsRequestBody employeeDetailsRequestBody) {
+
+        BeanUtils.copyProperties(addressRequestBody, address);
+        employeeDetail.setAddress(address);
+        BeanUtils.copyProperties(employeeDetailsRequestBody, employeeDetail);
     }
 }

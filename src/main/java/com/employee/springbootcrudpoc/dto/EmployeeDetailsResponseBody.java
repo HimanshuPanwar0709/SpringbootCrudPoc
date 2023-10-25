@@ -11,6 +11,8 @@ import lombok.*;
 @Setter
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @ToString
 public class EmployeeDetailsResponseBody {
     private Long id;

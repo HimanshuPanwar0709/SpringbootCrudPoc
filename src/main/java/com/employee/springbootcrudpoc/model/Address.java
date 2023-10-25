@@ -3,13 +3,15 @@ package com.employee.springbootcrudpoc.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
+
 @Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class Address {
+public class Address implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
