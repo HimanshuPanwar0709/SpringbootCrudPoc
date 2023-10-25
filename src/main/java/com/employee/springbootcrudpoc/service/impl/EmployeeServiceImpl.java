@@ -32,7 +32,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (address == null) {
             throw new ResourceNotFoundException("Address not found for Employee ID: " + id);
         }
-
         EmployeeDetailsResponseBody employeeDetailsResponseBody = new EmployeeDetailsResponseBody();
         AddressResponseBody addressResponseBody = new AddressResponseBody();
 
