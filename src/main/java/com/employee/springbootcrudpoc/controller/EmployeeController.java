@@ -28,4 +28,16 @@ public class EmployeeController {
     )throws ResourceNotFoundException{
         return employeeService.saveDetails(employeeDetailsRequestBody);
     }
+
+    @PutMapping(value = "/update-details-by-id")
+    public ResponseEntity<?> updateDetailsById(
+            @RequestParam Long id, @RequestBody EmployeeDetailsRequestBody employeeDetailsRequestBody
+    )throws ResourceNotFoundException{
+        return employeeService.updateDetailsById(id, employeeDetailsRequestBody);
+    }
+
+    @DeleteMapping(value = "/delete-details-by-id")
+    public ResponseEntity<?> deleteDetailsById( @RequestParam Long id){
+        return employeeService.deleteDetailsById(id);
+    }
 }

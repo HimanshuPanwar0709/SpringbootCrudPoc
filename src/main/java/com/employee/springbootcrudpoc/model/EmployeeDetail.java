@@ -3,6 +3,7 @@ package com.employee.springbootcrudpoc.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.validation.annotation.Validated;
 
 import java.io.Serializable;
 
@@ -37,7 +38,7 @@ public class EmployeeDetail implements Serializable {
     @Column
     private String emailId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     @JsonIgnore
     private Address address;

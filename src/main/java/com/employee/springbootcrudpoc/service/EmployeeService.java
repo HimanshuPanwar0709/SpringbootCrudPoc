@@ -10,4 +10,8 @@ public interface EmployeeService {
     EmployeeDetailsResponseBody getDetails(Long id) throws ResourceNotFoundException;
 
     ResponseEntity<?> saveDetails(EmployeeDetailsRequestBody employeeDetailsRequestBody) throws ResourceNotFoundException;
+
+    ResponseEntity<?> updateDetailsById(Long id, EmployeeDetailsRequestBody employeeDetailsRequestBody);
+
+    ResponseEntity<?> deleteDetailsById(Long id);
 }
